@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "task")
 data class Task(
-        @PrimaryKey(autoGenerate = true)
-        val id: Int,
         val taskName: String,
-        val taskProgress: Boolean = false
+        val taskProgress: Boolean = false,
+        @PrimaryKey(autoGenerate = true)
+        var id: Int?= -1
 )
