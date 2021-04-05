@@ -8,5 +8,5 @@ data class Task(
         val taskName: String,
         val taskProgress: Boolean = false,
         @PrimaryKey(autoGenerate = true)
-        var id: Int?= -1
+        var id: Int?= null
 )

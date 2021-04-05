@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Sample To Do</string>
+    <string name="add_task">Add a task</string>
+    <string name="task_name">Enter Task Name</string>
+    <string name="isCompleted">isCompleted</string>
+    <string name="todo_list">To Do List</string>
 </resources>

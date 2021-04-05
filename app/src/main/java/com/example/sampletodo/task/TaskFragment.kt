@@ -1,22 +1,25 @@
 package com.example.sampletodo.task
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sampletodo.adapter.TaskAdapter
-import com.example.sampletodo.data.Task
 import com.example.sampletodo.databinding.FragmentTaskBinding
+import com.example.sampletodo.utils.Utils
 
 class TaskFragment : Fragment() {
 
     private lateinit var binding: FragmentTaskBinding
     private lateinit var viewModel: TaskViewModel
-
-    private val diffList = mutableListOf<Task>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,40 +35,53 @@ class TaskFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(TaskViewModel::class.java)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        requireActivity().onBackPressed()
         initAdapter()
+        setClickListeners()
     }
 
     private fun initAdapter() {
-        initDummyList()
         binding.tasks.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            val taskAdapter = TaskAdapter()
-            taskAdapter.taskList = diffList
-            adapter = taskAdapter
+            adapter = TaskAdapter(viewModel)
+            val itemTouchHelperCallback =
+                    object :
+                            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                        override fun onMove(
+                                recyclerView: RecyclerView,
+                                viewHolder: RecyclerView.ViewHolder,
+                                target: RecyclerView.ViewHolder
+                        ): Boolean {
+
+                            return false
+                        }
+
+                        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                            val task = (adapter as TaskAdapter).currentList[viewHolder.adapterPosition]
+                            viewModel.delete(task)
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Deleted task at ${viewHolder.adapterPosition + 1} position",
+                                    Toast.LENGTH_SHORT
+                            ).show()
+
+                            Utils.logger("Swiped:", task.toString())
+                        }
+
+                    }
+            val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+            itemTouchHelper.attachToRecyclerView(this)
         }
     }
 
-    private fun initDummyList() {
-        val task1 = Task("Dummy 1", false)
-        val task2 = Task("Dummy 2", false)
-        val task3 = Task("Dummy 3", false)
-        val task4 = Task("Dummy 4", false)
-        val task5 = Task("Dummy 5", false)
-        val task6 = Task("Dummy 6", false)
-        val task7 = Task("Dummy 7", false)
-        diffList.add(task1)
-        diffList.add(task2)
-        diffList.add(task3)
-        diffList.add(task4)
-        diffList.add(task5)
-        diffList.add(task6)
-        diffList.add(task7)
-        diffList.add(task2)
-        diffList.add(task3)
-        diffList.add(task4)
-        diffList.add(task5)
-        diffList.add(task6)
-        diffList.add(task7)
+    private fun setClickListeners() {
+        binding.fab.setOnClickListener {
+            Log.e("Task Fragment", "fab clicked")
+            val action = TaskFragmentDirections.actionTaskFragmentToAddEditTaskFragment("")
+            findNavController().navigate(action)
+        }
     }
+
+
 
 }

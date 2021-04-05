@@ -13,4 +13,6 @@ class MainRepository @Inject constructor(
     override suspend fun insertTask(task: Task) = taskDao.insertTask(task)
 
     override suspend fun deleteTask(task: Task) = taskDao.deleteTask(task)
+
+    override suspend fun updateTask(task: Task) = taskDao.insertTask(task)
 }

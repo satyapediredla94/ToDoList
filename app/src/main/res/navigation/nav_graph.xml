@@ -8,6 +8,23 @@
     <fragment
         android:id="@+id/taskFragment"
         android:name="com.example.sampletodo.task.TaskFragment"
-        android:label="TaskFragment"
-        tools:context = "com.example.sampletodo.task.TaskFragment"/>
+        android:label="To Do List"
+        tools:context = "com.example.sampletodo.task.TaskFragment">
+        <action
+            android:id="@+id/action_taskFragment_to_addEditTaskFragment"
+            app:destination="@id/addEditTaskFragment">
+            <argument
+                android:name="taskName"
+                app:argType="string"
+                android:defaultValue=""/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addEditTaskFragment"
+        android:name="com.example.sampletodo.addedittask.AddEditTaskFragment"
+        android:label="@string/add_task">
+        <action
+            android:id="@+id/action_addEditTaskFragment_to_taskFragment"
+            app:destination="@id/taskFragment" />
+    </fragment>
 </navigation>
